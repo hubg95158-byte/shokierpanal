@@ -21,7 +21,7 @@ PASSWORD = "123456789"
 SITE_NAME = "منصة شقير المجانية"
 SITE_DESC = "منصة تعليمية سريعة وحديثة بعرض فيديوهات داخل الموقع"
 TIMEOUT = 20
-TOKEN_CACHE_FILE = Path("token_cache.json")
+TOKEN_CACHE_FILE = Path("/tmp/token_cache.json")
 
 
 def esc(text):
