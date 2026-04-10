@@ -17,7 +17,7 @@ from flask import Flask, request, render_template_string
 app = Flask(__name__)
 
 API_BASE = "https://api.golden-wave.me/api/website/blogs"
-TOKEN = "YOUR_BEARER_TOKEN_HERE"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS5nb2xkZW4td2F2ZS5tZS9hcGkvd2Vic2l0ZS9sb2dpbiIsImlhdCI6MTc3NTc4NDA0MiwiZXhwIjoxODA3MzIwMDQyLCJuYmYiOjE3NzU3ODQwNDIsImp0aSI6ImZ5M1YwSHhKU1drYnZENTgiLCJzdWIiOiIxNDUzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxhc3RfbG9naW5fYXQiOiIyMDI2LTA0LTEwVDAxOjIwOjQyLjYwODAxOFoiLCJ0aW1lem9uZSI6IlVUQyJ9.iRhUyVKIEatvon0c5zvfaSXAxi8Tmcdz1djF6tPkJvw"
 
 
 def get_page(page, api_base, token):
