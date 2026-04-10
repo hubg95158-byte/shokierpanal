@@ -2,14 +2,15 @@
 import html
 import re
 from urllib.parse import urlencode
-
 import requests
 from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
+# --- تغيير التوكن هنا (تم تعبئة الخاصة بك) ---
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS5nb2xkZW4td2F2ZS5tZS9hcGkvd2Vic2l0ZS9sb2dpbiIsImlhdCI6MTc3NTc4NDA0MiwiZXhwIjoxODA3MzIwMDQyLCJuYmYiOjE3NzU3ODQwNDIsImp0aSI6ImZ5M1YwSHhKU1drYnZENTgiLCJzdWIiOiIxNDUzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxhc3RfbG9naW5fYXQiOiIyMDI2LTA0LTEwVDAxOjIwOjQyLjYwODAxOFoiLCJ0aW1lem9uZSI6IlVUQyJ9.iRhUyVKIEatvon0c5zvfaSXAxi8Tmcdz1djF6tPkJvw"  # تأكد من عدم تغييره أو حذفه
+
 API_BASE = "https://api.golden-wave.me/api/website/blogs"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS5nb2xkZW4td2F2ZS5tZS9hcGkvd2Vic2l0ZS9sb2dpbiIsImlhdCI6MTc3NTc4NDA0MiwiZXhwIjoxODA3MzIwMDQyLCJuYmYiOjE3NzU3ODQwNDIsImp0aSI6ImZ5M1YwSHhKU1drYnZENTgiLCJzdWIiOiIxNDUzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxhc3RfbG9naW5fYXQiOiIyMDI2LTA0LTEwVDAxOjIwOjQyLjYwODAxOFoiLCJ0aW1lem9uZSI6IlVUQyJ9.iRhUyVKIEatvon0c5zvfaSXAxi8Tmcdz1djF6tPkJvw"
 
 
 def get_page(page, api_base, token):
@@ -49,10 +50,10 @@ def extract_youtube_id(url):
         return None
 
     patterns = [
-        r"youtu\.be/([a-zA-Z0-9_-]{6,})",
-        r"youtube\.com/watch\?v=([a-zA-Z0-9_-]{6,})",
-        r"youtube\.com/embed/([a-zA-Z0-9_-]{6,})",
-        r"youtube\.com/shorts/([a-zA-Z0-9_-]{6,})",
+        r"youtu.be/([a-zA-Z0-9_-]{11})",
+        r"youtube.com/watch?v=([a-zA-Z0-9_-]{11})",
+        r"youtube.com/embed/([a-zA-Z0-9_-]{11})",
+        r"youtube.com/shorts/([a-zA-Z0-9_-]{11})",
     ]
 
     for pattern in patterns:
@@ -60,7 +61,7 @@ def extract_youtube_id(url):
         if match:
             return match.group(1)
 
-    m = re.search(r"[?&]v=([a-zA-Z0-9_-]{6,})", url)
+    m = re.search(r"[?&]v=([a-zA-Z0-9_-]{11})", url)
     if m:
         return m.group(1)
 
@@ -72,7 +73,8 @@ def h(text):
 
 
 def nl2br(text):
-    return h(text).replace("\n", "<br>")
+    return h(text).replace("
+", "<br>")
 
 
 def fetch_all_items():
@@ -80,11 +82,13 @@ def fetch_all_items():
     page = 1
 
     while True:
-        res = get_page(page, API_BASE, TOKEN)
+        res = get_epage(page, API_BASE, TOKEN)
 
         if not res["ok"]:
             raise Exception(
-                f"Page {page} failed\nCode: {res.get('code')}\nError: {res.get('error')}"
+                f"Page {page} failed
+Code: {res.get('code')}
+Error: {res.get('error')}"
             )
 
         json_data = res["data"]
@@ -116,6 +120,7 @@ def fetch_all_items():
     return items
 
 
+# --- HTML + CSS TEMPLATE كاملة ومطورة ---
 TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -123,37 +128,161 @@ TEMPLATE = """
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page_title }}</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --border-radius: 12px;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+    }
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      direction: rtl;
+      margin: 0;
+      padding: 20px 16px 40px 16px;
+      background: var(--bg-primary);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+    .error {
+      background: #111111;
+      color: #00ff00;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      white-space: pre-wrap;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .header {
+      text-align: right;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+    .header small {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .back-link {
+      color: #7dd3fc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-top: 16px;
+      display: inline-block;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .item-list {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .card {
+      padding: 16px;
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(0,0,0,0.4);
+    }
+    .card a {
+      color: #fff;
+      text-decoration: none;
+    }
+    .card a:hover {
+      color: #7dd3fc;
+    }
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .card p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .iframe-wrapper {
+      margin-top: 16px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: 0;
+    }
+    .content {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .content br {
+      margin: 4px 0;
+    }
+  </style>
 </head>
-<body style="font-family:Tahoma,Arial,sans-serif;direction:rtl;padding:20px;background:#0f172a;color:#fff">
-  {% if error_message %}
-    <pre style="background:#111;color:#0f0;padding:20px;border-radius:12px;white-space:pre-wrap">{{ error_message }}</pre>
-  {% elif selected_item %}
-    <h1>{{ selected_item.title }}</h1>
-    {% if embed_url %}
-      <iframe
-        width="100%"
-        height="500"
-        src="{{ embed_url }}"
-        allowfullscreen
-        style="border:0;border-radius:14px">
-      </iframe>
-    {% else %}
-      <div>لا يوجد فيديو لهذا المحتوى</div>
-    {% endif %}
+<body>
+  <div class="container">
+    {% if error_message %}
+      <div class="error">{{ error_message }}</div>
+    {% elif selected_item %}
+      <header class="header">
+        <h1>{{ selected_item.title }}</h1>
+        <small>{{ selected_item.created_at }}</small>
+      </header>
 
-    <div style="margin-top:20px">{{ selected_item_desc|safe }}</div>
-    <p><a href="/" style="color:#7dd3fc">رجوع للرئيسية</a></p>
-  {% else %}
-    <h1>منصة شقير المجانية</h1>
-    {% for item in items %}
-      <div style="padding:14px;margin:12px 0;background:#1e293b;border-radius:14px">
-        <a href="/?id={{ item.id }}" style="color:#fff;text-decoration:none">
-          <h3>{{ item.title or "بدون عنوان" }}</h3>
-          <div>{{ item.desc_html|safe }}</div>
-        </a>
+      {% if embed_url %}
+        <div class="iframe-wrapper">
+          <iframe
+            src="{{ embed_url }}"
+            allowfullscreen>
+          </iframe>
+        </div>
+      {% else %}
+        <div style="margin-top:16px;color:var(--text-muted)">
+          لا يوجد فيديو لهذا المحتوى
+        </div>
+      {% endif %}
+
+      <div class="content">{{ selected_item_desc|safe }}</div>
+      <a href="/" class="back-link">رجوع للرئيسية</a>
+    {% else %}
+      <header class="header">
+        <h1>منصة شقير المجانية</h1>
+        <small>منصة تعليمية تقدم محتوى عربي مجاني</small>
+      </header>
+
+      <div class="item-list">
+        {% for item in items %}
+          <article class="card">
+            <a href="/?id={{ item.id }}">
+              <h3>{{ item.title or "بدون عنوان" }}</h3>
+              <p>{{ item.desc_html|safe }}</p>
+            </a>
+          </article>
+        {% endfor %}
       </div>
-    {% endfor %}
-  {% endif %}
+    {% endif %}
+  </div>
 </body>
 </html>
 """
@@ -211,3 +340,7 @@ def index():
         embed_url=embed_url,
         selected_item_desc=selected_item_desc,
     )
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
