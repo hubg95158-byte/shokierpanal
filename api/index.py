@@ -15,7 +15,7 @@ app = Flask(__name__)
 API_BASE = "https://api.golden-wave.me/api/website/blogs"
 LOGIN_URL = "https://api.golden-wave.me/api/website/login"
 
-STUDENT_CODE = "26687"
+STUDENT_CODE = "29283"
 PASSWORD = "123456789"
 
 SITE_NAME = "منصة شقير المجانية"
